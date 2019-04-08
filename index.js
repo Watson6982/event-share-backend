@@ -21,13 +21,13 @@ app.use(cors())
 
 // get events
 app.get('/api', async (req, res) => {
-    const events = await loadPostsCollection()
+    const events = await loadCollection('events')
     res.send(await events.find({}).toArray())
 })
 
 //add event
 app.post('/api', async (req, res) => {
-    const events = await loadPostsCollection()
+    const events = await loadCollection('events')
     await events.insertOne({
         text: req.body.text,
         createdAt: new Date()
@@ -37,17 +37,17 @@ app.post('/api', async (req, res) => {
 
 //delete event
 app.delete('/api/:id', async (req,res) => {
-    const events = await loadPostsCollection()
+    const events = await loadCollection('events')
     await events.deleteOne({_id: new mongodb.ObjectId(req.params.id)})
     res.status(200).send() // successful
 })
 
 // load events
-async function loadPostsCollection() {
+async function loadCollection(collection) {
     const client = await mongodb.MongoClient.connect(process.env.MONGO_DB_URL, {
         useNewUrlParser: true
     })
-    return client.db('note_app').collection('events')
+    return client.db('note_app').collection(collection)
 }
 
 // login
