@@ -96,7 +96,7 @@ passport.use( new LocalStrategy({
     passwordField: 'password'
   },
   async (username, password, done) => {
-    var x = await userfunc.loadUsersCollection()
+    var x = await loadCollection('app_user')
     users = await x.find({}).toArray()
     let user = await users.find((user) => {
       return user.email === username && user.password === password
@@ -115,7 +115,7 @@ passport.serializeUser((user, done) => {
 })
 
 passport.deserializeUser(async (id, done) => {
-    var x = await userfunc.loadUsersCollection()
+    var x = await loadCollection('app_user')
     users = await x.find({}).toArray()
     console.log('deserializing user') 
     let user = await users.find((user) => {
