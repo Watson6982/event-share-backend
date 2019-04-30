@@ -19,6 +19,16 @@ app.use(passport.session())
 app.use(bodyParser.json())
 app.use(cors())
 
+// Divert http traffic to https
+if(process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    if (req.header('x-forwarded-proto') !== 'https')
+      res.redirect(`https://${req.header('host')}${req.url}`)
+    else
+      next()
+  })
+}
+
 // get events
 app.get('/api', async (req, res) => {
     const events = await loadCollection('events')
